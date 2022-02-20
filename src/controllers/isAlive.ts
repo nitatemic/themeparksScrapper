@@ -1,11 +1,20 @@
-const db = require('../middlewares/dbCheck');
+const axios = require('axios');
 
-// Fonction qui renvoie le code 200 de réponse si le serveur est en marche
 exports.isAlive = function (req, res) {
-  // Vérifier que la base de données est accessible
-  if (db.isAlive()) {
-    res.status(200).send('OK');
-  } else {
-    res.status(500).send('KO');
-  }
+    axios.get(`https://api.themeparks.wiki/v1`)
+        .then(response => {
+            if (response.data.version === 1) {
+                res.status(200).send({
+                    status: 'ok',
+                    message: 'API of themeparks.wiki is up and running',
+                    data: response.data
+                });
+            } else {
+                res.status(500).send({
+                    status: 'error',
+                    message: 'API of themeparks.wiki is not running',
+                    data: response.data
+                });
+            }
+        })
 };

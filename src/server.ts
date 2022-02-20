@@ -3,6 +3,7 @@ require('dotenv').config();
 const { PROTOCOL } = process.env;
 // eslint-disable-next-line import/no-dynamic-require
 const http = require(PROTOCOL);
+// @ts-ignore
 const app = require('./app');
 
 const normalizePort = (val) => {

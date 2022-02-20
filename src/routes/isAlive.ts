@@ -1,3 +1,4 @@
+// @ts-ignore
 const express = require('express');
 const isAliveCtrl = require('../controllers/isAlive');
 

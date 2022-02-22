@@ -4,6 +4,8 @@ const axios = require('axios');
  * Function to check if the server is alive and if themeparks' API is up
  * @param req
  * @param res
+ * @returns Status code 200 if the server is alive and the API is up
+ * @returns Status code 500 if the server is alive but the API is down
  */
 exports.isAlive = function (req, res) {
     axios.get(`https://api.themeparks.wiki/v1`)

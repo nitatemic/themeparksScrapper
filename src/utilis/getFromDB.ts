@@ -8,7 +8,7 @@ require('dotenv').config();
 const mysql = require('mysql');
 
 // @ts-ignore
-const pool = mysql.createPool({
+const getPool = mysql.createPool({
     host: process.env.MYSQL_HOST,
     user: process.env.MYSQL_USER,
     password: process.env.MYSQL_PASSWORD,
@@ -23,7 +23,7 @@ const pool = mysql.createPool({
  */
 exports.getAllParksID = function () {
     return new Promise((resolve, reject) => {
-        pool.getConnection((err, connection) => {
+        getPool.getConnection((err, connection) => {
             if (err) {
                 reject(err);
             } else {

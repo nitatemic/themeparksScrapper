@@ -6,7 +6,7 @@ const getFromAPI = require('../utilis/getFromAPI');
  * @returns Status code 500 if there was an error
  */
 
-exports.sendAllWaitingTimesToDB = async (req, res): Promise<string> => {
+exports.sendAllWaitingTimesToDB = async function (req, res) {
     /* Récupérer la liste de tous les parcs compatibles avec l'API*/
     let parksList = await getFromDB.getAllParksID()
     //Convert rowDataPacket array to array
@@ -18,8 +18,13 @@ exports.sendAllWaitingTimesToDB = async (req, res): Promise<string> => {
         let waitingTimes = await getFromAPI.getWaitingTimesFromAPI(parksList[i].APIID);
         //If the waiting times are not null, loop through them and add them to the database
         if (waitingTimes.length > 0) {
-            for (let j = 0; j < waitingTimes.length; j++) {
-                await sendToDB.pushWaitingTimeToDB(waitingTimes[j].id, waitingTimes[j].parkName, waitingTimes[j].parkURL, waitingTimes[j].parkAddress, waitingTimes[j].parkCity, waitingTimes[j].parkState, waitingTimes[j].parkZip, waitingTimes[j].parkPhone, waitingTimes[j].parkLat, waitingTimes[j].parkLng, waitingTimes[j].parkWaitTime, waitingTimes[j].parkWaitTimeDate);
+            for (let j = 0; j < waitingTimes.length - 1; j++) {
+                if (waitingTimes[j].status != "CLOSED") {
+                    await getFromDB.APIIDToExperienceID(res, waitingTimes[j].id, next => {
+                        waitingTimes[j].id = res.locals.experiencesID;
+                        console.log(waitingTimes[j].id);
+                    });
+                }
             }
         }
         //Else, do nothing
@@ -28,3 +33,4 @@ exports.sendAllWaitingTimesToDB = async (req, res): Promise<string> => {
     }
     return res.status(200).json(parksList);
 }
+

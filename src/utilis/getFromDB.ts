@@ -39,23 +39,20 @@ exports.getAllParksID = function () {
     });
 };
 
-exports.APIIDToExperienceID = function (APIID: string) {
-    return new Promise((resolve, reject) => {
-        getPool.getConnection((err, connection) => {
-            if (err) {
-                reject(err);
-            } else {
-                connection.query(`SELECT experienceID
-                                  FROM experiences
-                                  WHERE APIID = ${getPool.escape(APIID)};`,
-                    (err, result) => {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve(result);
-                        }
-                    });
-            }
-        });
+exports.APIIDToExperienceID = async (res, APIID, next) => {
+    getPool.getConnection((err, connection) => {
+        connection.query(`SELECT experienceID
+                          FROM experiences
+                          WHERE APIID = ${getPool.escape(APIID)};`,
+            (err, result) => {
+                if (err) {
+                    throw err;
+                } else {
+                    connection.release();
+                    res.locals.experiencesID = JSON.parse(JSON.stringify(result))[0].experienceID;
+                    next();
+                }
+            });
     });
 };
+

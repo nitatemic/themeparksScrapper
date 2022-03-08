@@ -38,3 +38,24 @@ exports.getAllParksID = function () {
         });
     });
 };
+
+exports.APIIDToExperienceID = function (APIID: string) {
+    return new Promise((resolve, reject) => {
+        getPool.getConnection((err, connection) => {
+            if (err) {
+                reject(err);
+            } else {
+                connection.query(`SELECT experienceID
+                                  FROM experiences
+                                  WHERE APIID = ${getPool.escape(APIID)};`,
+                    (err, result) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(result);
+                        }
+                    });
+            }
+        });
+    });
+};

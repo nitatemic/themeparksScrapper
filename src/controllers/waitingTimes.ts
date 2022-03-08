@@ -16,7 +16,15 @@ exports.sendAllWaitingTimesToDB = async (req, res): Promise<string> => {
     for (let i = 0; i < parksList.length; i++) {
         //Get the waiting times for the park
         let waitingTimes = await getFromAPI.getWaitingTimesFromAPI(parksList[i].APIID);
-        console.log(waitingTimes)
+        //If the waiting times are not null, loop through them and add them to the database
+        if (waitingTimes.length > 0) {
+            for (let j = 0; j < waitingTimes.length; j++) {
+                await sendToDB.pushWaitingTimeToDB(waitingTimes[j].id, waitingTimes[j].parkName, waitingTimes[j].parkURL, waitingTimes[j].parkAddress, waitingTimes[j].parkCity, waitingTimes[j].parkState, waitingTimes[j].parkZip, waitingTimes[j].parkPhone, waitingTimes[j].parkLat, waitingTimes[j].parkLng, waitingTimes[j].parkWaitTime, waitingTimes[j].parkWaitTimeDate);
+            }
+        }
+        //Else, do nothing
+
+
     }
     return res.status(200).json(parksList);
 }

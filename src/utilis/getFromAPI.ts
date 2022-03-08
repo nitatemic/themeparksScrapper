@@ -14,7 +14,6 @@ exports.getWaitingTimesFromAPI = async (parkID: string) => {
         );
         let res = JSON.parse((JSON.stringify(response.data)));
         return res.liveData;
-
     } catch (error) {
         throw new Error(error);
     }

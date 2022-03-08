@@ -16,4 +16,11 @@ const postPool = mysql.createPool({
     skipSetTimezone: true,
 });
 
+/*
+ * Function to send a waiting time to the database
+ * @param {array} waitingTime - The waiting time to send
+ */
 
+exports.pushWaitingTimeToDB = (waitingTime) => {
+
+}

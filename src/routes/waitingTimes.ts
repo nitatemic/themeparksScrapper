@@ -1,8 +1,8 @@
 // @ts-ignore
 const express = require('express');
-const isAliveCtrl = require('../controllers/isAlive');
+const waitingTimes = require('../controllers/waitingTimes');
 
 // @ts-ignore
 const router = express.Router();
-router.get('/', isAliveCtrl.isAlive);
+router.get('/', waitingTimes.sendAllWaitingTimesToDB);
 module.exports = router;

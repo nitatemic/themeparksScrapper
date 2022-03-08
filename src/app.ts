@@ -2,6 +2,7 @@
 const express = require('express'); // ExpressJS module
 const helmet = require('helmet');
 const isAliveRoutes = require('./routes/isAlive');
+const waitingTimesRoutes = require('./routes/waitingTimes');
 
 // @ts-ignore
 const app = express();
@@ -19,5 +20,6 @@ app.use((req, res, next) => {
 });
 
 app.use('/', isAliveRoutes);
+app.use('/waitingTimes', waitingTimesRoutes);
 
 module.exports = app;

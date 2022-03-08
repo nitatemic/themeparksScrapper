@@ -56,3 +56,19 @@ exports.APIIDToExperienceID = async (res, APIID, next) => {
     });
 };
 
+exports.statusToStatusCode = async (res, status, next) => {
+    getPool.getConnection((err, connection) => {
+        connection.query(`SELECT statusCode
+                          FROM statusTypes
+                          WHERE statusCode = ${getPool.escape(status)};`,
+            (err, result) => {
+                if (err) {
+                    throw err;
+                } else {
+                    connection.release();
+                    res.locals.statusCode = JSON.parse(JSON.stringify(result))[0].statusCode;
+                    next();
+                }
+            });
+    });
+};

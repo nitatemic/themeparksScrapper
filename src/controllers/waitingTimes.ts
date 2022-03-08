@@ -20,11 +20,14 @@ exports.sendAllWaitingTimesToDB = async function (req, res) {
         if (waitingTimes.length > 0) {
             for (let j = 0; j < waitingTimes.length - 1; j++) {
                 if (waitingTimes[j].status != "CLOSED") {
-                    await getFromDB.APIIDToExperienceID(res, waitingTimes[j].id, next => {
+                    await getFromDB.APIIDToExperienceID(res, waitingTimes[j].id, async next => {
                         waitingTimes[j].id = res.locals.experiencesID;
-                        console.log(waitingTimes[j].id);
+                        await getFromDB.statusToStatusCode(res, waitingTimes[j].status, next => {
+                            waitingTimes[j].status = res.locals.statusCode;
+                        });
                     });
                 }
+                //If experience is closed, nothing
             }
         }
         //Else, do nothing

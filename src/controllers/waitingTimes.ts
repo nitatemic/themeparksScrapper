@@ -1,12 +1,13 @@
 const getFromDB = require('../utilis/getFromDB');
 const getFromAPI = require('../utilis/getFromAPI');
+const sendToDB = require('../utilis/sendToDB');
 /**
  * Function to get all waiting times and add them to the database
  * @returns Status code 200 if the waiting times were added successfully
  * @returns Status code 500 if there was an error
  */
 
-exports.sendAllWaitingTimesToDB = async function (req, res) {
+exports.sendAllWaitingTimesToDB = async function (req: any, res) {
     /* Récupérer la liste de tous les parcs compatibles avec l'API*/
     let parksList = await getFromDB.getAllParksID()
     //Convert rowDataPacket array to array
@@ -19,21 +20,27 @@ exports.sendAllWaitingTimesToDB = async function (req, res) {
         //If the waiting times are not null, loop through them and add them to the database
         if (waitingTimes.length > 0) {
             for (let j = 0; j < waitingTimes.length - 1; j++) {
-                if (waitingTimes[j].status != "CLOSED") {
-                    await getFromDB.APIIDToExperienceID(res, waitingTimes[j].id, async next => {
-                        waitingTimes[j].id = res.locals.experiencesID;
-                        await getFromDB.statusToStatusCode(res, waitingTimes[j].status, next => {
-                            waitingTimes[j].status = res.locals.statusCode;
+                if (waitingTimes[j].entityType === "ATTRACTION") {
+                    if (waitingTimes[j].status != "CLOSED") {
+                        await getFromDB.APIIDToExperienceID(res, waitingTimes[j].id, async next => {
+                            await getFromDB.statusToStatusCode(res, waitingTimes[j].status, async next => {
+                                if (waitingTimes[j].queue) {
+                                    if (waitingTimes[j].queue.STANDBY) {
+                                        await sendToDB.pushWaitingTime(waitingTimes, res, waitingTimes[j].queue.STANDBY.waitTime, 0, waitingTimes[j].lastUpdated, async next => {
+                                                if (waitingTimes[j].queue.SINGLE_RIDER) {
+                                                    await sendToDB.pushWaitingTime(waitingTimes, res, waitingTimes[j].queue.SINGLE_RIDER.waitTime, 1, waitingTimes[j].lastUpdated, next => {
+                                                    });
+                                                }
+                                            }
+                                        );
+                                    }
+                                }
+                            });
                         });
-                    });
+                    }
                 }
-                //If experience is closed, nothing
             }
         }
-        //Else, do nothing
-
-
     }
-    return res.status(200).json(parksList);
+    res.status(200).send();
 }
-

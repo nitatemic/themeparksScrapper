@@ -9,6 +9,8 @@ const mysql = require('mysql');
 
 // @ts-ignore
 const getPool = mysql.createPool({
+    connectionLimit: 5,
+    waitForConnections: true,
     host: process.env.MYSQL_HOST,
     user: process.env.MYSQL_USER,
     password: process.env.MYSQL_PASSWORD,
@@ -25,12 +27,15 @@ exports.getAllParksID = function () {
     return new Promise((resolve, reject) => {
         getPool.getConnection((err, connection) => {
             if (err) {
+                connection.release();
                 reject(err);
             } else {
                 connection.query('SELECT APIID FROM parks', (err, rows) => {
                     if (err) {
+                        connection.release();
                         reject(err);
                     } else {
+                        connection.release();
                         resolve(rows);
                     }
                 });
@@ -46,6 +51,7 @@ exports.APIIDToExperienceID = async (res, APIID, next) => {
                           WHERE APIID = ${getPool.escape(APIID)};`,
             (err, result) => {
                 if (err) {
+                    connection.release();
                     throw err;
                 } else {
                     connection.release();
@@ -63,10 +69,29 @@ exports.statusToStatusCode = async (res, status, next) => {
                           WHERE statusCode = ${getPool.escape(status)};`,
             (err, result) => {
                 if (err) {
+                    connection.release();
                     throw err;
                 } else {
                     connection.release();
                     res.locals.statusCode = JSON.parse(JSON.stringify(result))[0].statusCode;
+                    next();
+                }
+            });
+    });
+};
+
+exports.queueToQueueCode = async (res, queue, next) => {
+    getPool.getConnection((err, connection) => {
+        connection.query(`SELECT queueCode
+                          FROM queueTypes
+                          WHERE queueCode = ${getPool.escape(queue)};`,
+            (err, result) => {
+                if (err) {
+                    connection.release();
+                    throw err;
+                } else {
+                    connection.release();
+                    res.locals.queueCode = JSON.parse(JSON.stringify(result))[0].queueCode;
                     next();
                 }
             });

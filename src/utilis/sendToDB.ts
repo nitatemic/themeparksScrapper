@@ -8,6 +8,8 @@ require('dotenv').config();
 const mysql = require('mysql');
 
 const postPool = mysql.createPool({
+    connectionLimit: 5,
+    waitForConnections: true,
     host: process.env.MYSQL_HOST,
     user: process.env.MYSQL_USER,
     password: process.env.MYSQL_PASSWORD,
@@ -21,6 +23,33 @@ const postPool = mysql.createPool({
  * @param {array} waitingTime - The waiting time to send
  */
 
-exports.pushWaitingTimeToDB = (waitingTime) => {
-
-}
+exports.pushWaitingTime = async (waitingTime, res, wait, queueCode, lastUpdated, next) => {
+    postPool.getConnection((err, connection) => {
+        if (err) {
+            throw err;
+        }
+        try {
+            connection.query(`INSERT INTO \`waitingTimes\` (\`experienceID\`, \`statusCode\`,
+                                                            \`waitingTime\`, \`queueCode\`,
+                                                            \`time\`)
+                              VALUES ('${postPool.escape(res.locals.experiencesID)}',
+                                      '${postPool.escape(res.locals.statusCode)}',
+                                      '${postPool.escape(wait)}', '${queueCode}',
+                                      ${postPool.escape(lastUpdated)});`,
+                (err, result) => {
+                    if (err) {
+                        res.status = 500;
+                        console.log(err);
+                        connection.release();
+                    } else {
+                        console.log('Waiting time pushed to database');
+                        connection.release();
+                        next()
+                    }
+                });
+        } catch (err) {
+            console.log(err);
+            connection.release();
+        }
+    })
+};

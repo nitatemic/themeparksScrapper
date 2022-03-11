@@ -26,10 +26,10 @@ exports.sendAllWaitingTimesToDB = async function (req: any, res) {
                         getFromDB.statusToStatusCode(waitingTimes[j].status).then((statusCode: any) => {
                             if (waitingTimes[j].queue) {
                                 if (waitingTimes[j].queue.STANDBY) {
-                                    if (waitingTimes[j].queue.STANDBY.waitTime != null) {
+                                    if (waitingTimes[j].queue.STANDBY.waitTime !== null) {
                                         sendToDB.pushWaitingTime(statusCode, experienceID, waitingTimes[j].queue.STANDBY.waitTime, 0, waitingTimes[j].lastUpdated).then(() => {
                                             if (waitingTimes[j].queue.SINGLE_RIDER) {
-                                                if (waitingTimes[j].queue.SINGLE_RIDER.waitTime != null) {
+                                                if (waitingTimes[j].queue.SINGLE_RIDER.waitTime !== null) {
                                                     sendToDB.pushWaitingTime(statusCode, experienceID, waitingTimes[j].queue.SINGLE_RIDER.waitTime, 1, waitingTimes[j].lastUpdated)
                                                 }
                                             }

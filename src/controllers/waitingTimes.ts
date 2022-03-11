@@ -32,28 +32,6 @@ exports.sendAllWaitingTimesToDB = async function (req: any, res) {
                             })
                         }
                     }
-                    //
-                    // await getFromDB.APIIDToExperienceID(res, waitingTimes[j].id, async next => {
-                    //     console.log(res.locals.experiencesID)
-                    //     await getFromDB.statusToStatusCode(res, waitingTimes[j].status, async next => {
-                    //         if (waitingTimes[j].queue) {
-                    //             if (waitingTimes[j].queue.STANDBY) {
-                    //                 if (waitingTimes[j].queue.STANDBY.waitTime != null) {
-                    //                     await sendToDB.pushWaitingTime(res, waitingTimes[j].queue.STANDBY.waitTime, 0, waitingTimes[j].lastUpdated, async next => {
-                    //                             if (waitingTimes[j].queue.SINGLE_RIDER) {
-                    //                                 if (waitingTimes[j].queue.SINGLE_RIDER.waitTime != null) {
-                    //                                     console.log(waitingTimes[j])
-                    //                                     await sendToDB.pushWaitingTime(res, waitingTimes[j].queue.SINGLE_RIDER.waitTime, 1, waitingTimes[j].lastUpdated, next => {
-                    //                                     });
-                    //                                 }
-                    //                             }
-                    //                         }
-                    //                     );
-                    //                 }
-                    //             }
-                    //         }
-                    //     });
-                    // });
                 }
             }
         }

@@ -20,7 +20,6 @@ exports.sendAllWaitingTimesToDB = async function (req: any, res) {
         if (waitingTimes.length > 0) {
             for (let j = 0; j < waitingTimes.length; j++) {
                 if (waitingTimes[j].entityType === "ATTRACTION" && waitingTimes[j].status == "OPERATING") {
-                    console.log(waitingTimes[j].id)
                     if (waitingTimes[j].queue.STANDBY != undefined) {
                         if (waitingTimes[j].queue.STANDBY.waitTime !== null) {
                             DBActions.pushWaitingTime(waitingTimes[j], waitingTimes[j].queue.STANDBY.waitTime, 0).then(() => {

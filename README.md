@@ -22,3 +22,4 @@ MYSQL_DATABASE, PROTOCOL
 
 To configure the database, here is a SQL dump that will add all the parks and attractions in the
 database.
+[ThemeParkScrapper.zip](https://github.com/nitatemic/ThemeParkScrapper/files/8228847/ThemeParkScrapper.zip)

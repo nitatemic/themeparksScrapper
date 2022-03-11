@@ -22,10 +22,10 @@ exports.sendAllWaitingTimesToDB = async function (req: any, res) {
                 if (waitingTimes[j].entityType === "ATTRACTION" && waitingTimes[j].status == "OPERATING") {
                     console.log(waitingTimes[j].id)
                     if (waitingTimes[j].queue.STANDBY != undefined) {
-                        if (waitingTimes[j].queue.STANDBY.waitTime != null) {
+                        if (waitingTimes[j].queue.STANDBY.waitTime !== null) {
                             DBActions.pushWaitingTime(waitingTimes[j], waitingTimes[j].queue.STANDBY.waitTime, 0).then(() => {
                                 if (waitingTimes[j].queue.SINGLE_RIDER) {
-                                    if (waitingTimes[j].queue.SINGLE_RIDER.waitTime != null) {
+                                    if (waitingTimes[j].queue.SINGLE_RIDER.waitTime !== null) {
                                         DBActions.pushWaitingTime(waitingTimes[j], waitingTimes[j].queue.SINGLE_RIDER.waitTime, 1)
                                     }
                                 }

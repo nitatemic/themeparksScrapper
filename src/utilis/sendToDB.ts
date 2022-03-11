@@ -23,7 +23,7 @@ const postPool = mysql.createPool({
  * @param {array} waitingTime - The waiting time to send
  */
 
-exports.pushWaitingTime = async (waitingTime, res, wait, queueCode, lastUpdated, next) => {
+exports.pushWaitingTime = async (statusCode, experiencesID, wait, queueCode, lastUpdated) => {
     postPool.getConnection((err, connection) => {
         if (err) {
             throw err;
@@ -32,19 +32,18 @@ exports.pushWaitingTime = async (waitingTime, res, wait, queueCode, lastUpdated,
             connection.query(`INSERT INTO \`waitingTimes\` (\`experienceID\`, \`statusCode\`,
                                                             \`waitingTime\`, \`queueCode\`,
                                                             \`time\`)
-                              VALUES ('${postPool.escape(res.locals.experiencesID)}',
-                                      '${postPool.escape(res.locals.statusCode)}',
+                              VALUES ('${postPool.escape(experiencesID)}',
+                                      '${postPool.escape(statusCode)}',
                                       '${postPool.escape(wait)}', '${queueCode}',
                                       ${postPool.escape(lastUpdated)});`,
                 (err, result) => {
                     if (err) {
-                        res.status = 500;
                         console.log(err);
                         connection.release();
                     } else {
-                        console.log('Waiting time pushed to database');
+                        console.log(`Pushed to database`);
                         connection.release();
-                        next()
+                        return;
                     }
                 });
         } catch (err) {

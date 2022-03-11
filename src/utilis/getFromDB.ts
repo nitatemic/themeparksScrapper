@@ -44,7 +44,7 @@ exports.getAllParksID = function () {
     });
 };
 
-exports.APIIDToExperienceID = async (res, APIID, next) => {
+exports.APIIDToExperienceID = async (APIID) => {
     getPool.getConnection((err, connection) => {
         connection.query(`SELECT experienceID
                           FROM experiences
@@ -55,14 +55,13 @@ exports.APIIDToExperienceID = async (res, APIID, next) => {
                     throw err;
                 } else {
                     connection.release();
-                    res.locals.experiencesID = JSON.parse(JSON.stringify(result))[0].experienceID;
-                    next();
+                    return JSON.parse(JSON.stringify(result))[0].experienceID;
                 }
             });
     });
 };
 
-exports.statusToStatusCode = async (res, status, next) => {
+exports.statusToStatusCode = async (status) => {
     getPool.getConnection((err, connection) => {
         connection.query(`SELECT statusCode
                           FROM statusTypes
@@ -73,15 +72,14 @@ exports.statusToStatusCode = async (res, status, next) => {
                     throw err;
                 } else {
                     connection.release();
-                    res.locals.statusCode = JSON.parse(JSON.stringify(result))[0].statusCode;
-                    next();
+                    return JSON.parse(JSON.stringify(result))[0].statusCode;
                 }
             });
     });
 };
 
-exports.queueToQueueCode = async (res, queue, next) => {
-    getPool.getConnection((err, connection) => {
+exports.queueToQueueCode = async (queue) => {
+    getPool.getConnection((connection) => {
         connection.query(`SELECT queueCode
                           FROM queueTypes
                           WHERE queueCode = ${getPool.escape(queue)};`,
@@ -91,8 +89,7 @@ exports.queueToQueueCode = async (res, queue, next) => {
                     throw err;
                 } else {
                     connection.release();
-                    res.locals.queueCode = JSON.parse(JSON.stringify(result))[0].queueCode;
-                    next();
+                    return JSON.parse(JSON.stringify(result))[0].queueCode;
                 }
             });
     });

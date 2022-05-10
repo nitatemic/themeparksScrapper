@@ -5,7 +5,7 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "dev": "nodemon src/server.ts",
-        "start": "node src/server.rs",
+        "start": "node src/server.ts",
         "auto-compile": "tsc -w -p tsconfig.json",
         "compile": "tsc -p tsconfig.json"
     },

@@ -7,14 +7,15 @@ const axios = require('axios');
  * @throws {Error} - If API returns an error
  */
 
-exports.getWaitingTimesFromAPI = async (parkID: string) => {
+exports.getWaitingTimesFromAPI = async (parkID) => {
     try {
         const response = await axios.get(
-            `https://api.themeparks.wiki/v1/entity/${parkID}/live`
+          `https://api.themeparks.wiki/v1/entity/${parkID}/live`
         );
         let res = JSON.parse((JSON.stringify(response.data)));
         return res.liveData;
-    } catch (error) {
+    }
+    catch (error) {
         throw new Error(error);
     }
 };

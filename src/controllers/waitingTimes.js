@@ -6,7 +6,7 @@ const getFromAPI = require('../utilis/getFromAPI');
  * @returns Status code 500 if there was an error
  */
 
-exports.sendAllWaitingTimesToDB = async function (req: any, res) {
+exports.sendAllWaitingTimesToDB = async function (req, res) {
     /* Récupérer la liste de tous les parcs compatibles avec l'API*/
     let parksList = await DBActions.getAllParksID()
     //Convert rowDataPacket array to array

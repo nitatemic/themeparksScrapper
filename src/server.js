@@ -1,15 +1,7 @@
 require('dotenv').config();
 
-const serverKey = process.env.SERVER_KEY;
-const serverCert = process.env.SERVER_CERT;
-const https = require('https');
-const fs = require('fs');
+const http = require('http');
 const app = require('./app');
-
-const options = {
-  key: fs.readFileSync(serverKey),
-  cert: fs.readFileSync(serverCert),
-};
 
 const normalizePort = (val) => {
   const port = parseInt(val, 10);
@@ -25,7 +17,7 @@ const normalizePort = (val) => {
 };
 /* Setting the port to the value of the environment variable PORT, or 3001 if the environment variable
 is not set. */
-const port = normalizePort(process.env.PORT || '3001');
+const port = normalizePort(process.env.PORT || '8080');
 app.set('port', port);
 
 /**
@@ -52,7 +44,7 @@ const errorHandler = (error) => {
   }
 };
 
-const server = https.createServer(options, app);
+const server = http.createServer(app);
 
 server.on('error', errorHandler);
 

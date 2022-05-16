@@ -14,15 +14,17 @@ exports.isAlive = function (req, res) {
     if (response.data.version === 1) {
       res.status(200).send({
         status: 'ok',
-        message: 'API of themeparks.wiki is up and running',
+        message: 'API of themeparks.wiki is up and the database is available',
         data: response.data,
       });
     } else {
       res.status(500).send({
         status: 'error',
-        message: 'API of themeparks.wiki is not running',
+        message: 'API of themeparks.wiki is not running but the database is available',
         data: response.data,
       });
     }
   });
 };
+
+

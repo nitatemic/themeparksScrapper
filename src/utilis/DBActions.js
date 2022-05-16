@@ -155,13 +155,13 @@ exports.pushWaitingTime = async (waitingTimes, wait, queueCode) => {
   })
 };
 
-exports.checkConnection = () => {
+exports.checkConnection = (req, res, next) => {
   Pool.getConnection((err, connection) => {
     if (err) {
-      throw err;
+      res.status(500).send('DB is down');
     } else {
-      console.log(`Database alive`);
       connection.release();
+      next();
     }
   })
 };

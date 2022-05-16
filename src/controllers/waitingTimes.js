@@ -25,7 +25,9 @@ exports.sendAllWaitingTimesToDB = async function (req, res) {
                             DBActions.pushWaitingTime(waitingTimes[j], waitingTimes[j].queue.STANDBY.waitTime, 0).then(() => {
                                 if (waitingTimes[j].queue.SINGLE_RIDER) {
                                     if (waitingTimes[j].queue.SINGLE_RIDER.waitTime !== null) {
-                                        DBActions.pushWaitingTime(waitingTimes[j], waitingTimes[j].queue.SINGLE_RIDER.waitTime, 1)
+                                        DBActions.pushWaitingTime(waitingTimes[j],
+                                          waitingTimes[j].queue.SINGLE_RIDER.waitTime,
+                                          1)
                                     }
                                 }
                             })
@@ -35,5 +37,7 @@ exports.sendAllWaitingTimesToDB = async function (req, res) {
             }
         }
     }
-    res.status(200).send();
+    res.status(200).send({
+        message: "All waiting times were added successfully"
+    })
 }

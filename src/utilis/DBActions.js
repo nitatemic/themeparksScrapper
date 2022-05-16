@@ -144,12 +144,24 @@ exports.pushWaitingTime = async (waitingTimes, wait, queueCode) => {
                                             }
                                         })
                                 }
-                            });
-                    }
-                });
-        } catch (err) {
-            console.log(err);
-            connection.release();
-        }
-    })
+              });
+          }
+        });
+    }
+    catch (err) {
+      console.log(err);
+      connection.release();
+    }
+  })
+};
+
+exports.checkConnection = () => {
+  Pool.getConnection((err, connection) => {
+    if (err) {
+      throw err;
+    } else {
+      console.log(`Database alive`);
+      connection.release();
+    }
+  })
 };

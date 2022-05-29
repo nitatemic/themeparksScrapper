@@ -96,28 +96,28 @@ exports.queueToQueueCode = async (queue) => {
 };
 
 exports.pushWaitingTime = async (waitingTimes, wait, queueCode) => {
-    var experienceID: number;
-    var statusCode: number;
-    Pool.getConnection((err, connection) => {
-        if (err) {
-            throw err;
-        }
+  let experienceID;
+  let statusCode;
+  Pool.getConnection((err, connection) => {
+    if (err) {
+      throw err;
+    }
 
-        try {
-            connection.query(`SELECT experienceID
-                              FROM experiences
-                              WHERE APIID = ${Pool.escape(waitingTimes.id)};`,
-                (err, result) => {
-                    if (err) {
-                        connection.release();
-                        throw err;
-                    } else {
-                        experienceID = JSON.parse(JSON.stringify(result))[0].experienceID;
-                        connection.query(`SELECT statusCode
-                                          FROM statusTypes
-                                          WHERE statusCode = ${Pool.escape(waitingTimes.status)};`,
-                            (err, result) => {
-                                if (err) {
+    try {
+      connection.query(`SELECT experienceID
+                        FROM experiences
+                        WHERE APIID = ${Pool.escape(waitingTimes.id)};`,
+        (err, result) => {
+          if (err) {
+            connection.release();
+            throw err;
+          } else {
+            experienceID = JSON.parse(JSON.stringify(result))[0].experienceID;
+            connection.query(`SELECT statusCode
+                              FROM statusTypes
+                              WHERE statusCode = ${Pool.escape(waitingTimes.status)};`,
+              (err, result) => {
+                if (err) {
                                     connection.release();
                                     throw err;
                                 } else {
@@ -144,12 +144,24 @@ exports.pushWaitingTime = async (waitingTimes, wait, queueCode) => {
                                             }
                                         })
                                 }
-                            });
-                    }
-                });
-        } catch (err) {
-            console.log(err);
-            connection.release();
-        }
-    })
+              });
+          }
+        });
+    }
+    catch (err) {
+      console.log(err);
+      connection.release();
+    }
+  })
+};
+
+exports.checkConnection = (req, res, next) => {
+  Pool.getConnection((err, connection) => {
+    if (err) {
+      res.status(500).send('DB is down');
+    } else {
+      connection.release();
+      next();
+    }
+  })
 };

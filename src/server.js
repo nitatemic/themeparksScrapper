@@ -1,9 +1,6 @@
 require('dotenv').config();
 
-const { PROTOCOL } = process.env;
-// eslint-disable-next-line import/no-dynamic-require
-const http = require(PROTOCOL);
-// @ts-ignore
+const http = require('http');
 const app = require('./app');
 
 const normalizePort = (val) => {
@@ -18,9 +15,16 @@ const normalizePort = (val) => {
   }
   return false;
 };
-const port = normalizePort(process.env.PORT || '3001');
+/* Setting the port to the value of the environment variable PORT, or 3001 if the environment variable
+is not set. */
+const port = normalizePort(process.env.PORT || '8080');
 app.set('port', port);
 
+/**
+ * If the error is not related to the server listening, throw the error. If the error is related to the
+ * server listening, then exit the process with a status code of 1
+ * @param error - The error object that was thrown
+ */
 const errorHandler = (error) => {
   if (error.syscall !== 'listen') {
     throw error;
